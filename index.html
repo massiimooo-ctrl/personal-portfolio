@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Combined Portfolio – Marcel Le</title>
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    /* Basis-Custom CSS */
+    :where([class^="ri-"])::before {
+      content: "\f3c2";
+    }
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    .custom-cursor {
+      cursor: none;
+    }
+    #cursor {
+      width: 20px;
+      height: 20px;
+      background: #ff6b6b;
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.2s;
+    }
+    @keyframes noise {
+      0% { background-position: 0 0; }
+      100% { background-position: 100% 100%; }
+    }
+    /* Noise-Hintergrund (leicht transparenter Overlay-Effekt) */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 1.5;
+      mix-blend-mode: overlay;
+      z-index: 1;
+    }
+    /* Menü-Overlay (Clip-Path) */
+    .menu-overlay {
+      clip-path: circle(0% at 45px 45px);
+      transition: clip-path 0.7s ease-in-out;
+    }
+    .menu-overlay.active {
+      clip-path: circle(150% at 45px 45px);
+    }
+  </style>
+  <script>
+    // Erweiterung der Tailwind Konfiguration
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#8E6FF7",
+            secondary: "#4ecdc4"
+          },
+          fontFamily: {
+            space: ['Space Grotesk', 'sans-serif'],
+            pacifico: ['Pacifico', 'cursive']
+          },
+          borderRadius: {
+            button: "8px"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-white font-space overflow-x-hidden relative custom-cursor">
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+  
+  <!-- Fest positioniertes Logo (oben rechts) -->
+  <div id="logoBox" class="fixed top-8 right-8 z-50">
+    <a href="#home" class="group relative w-16 h-16 bg-primary rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden">
+      <img src="assets/images/working anime.gif" alt="Marcel Le Logo" class="w-full h-full object-cover">
+    </a>
+  </div>
+  
+  
+  <!-- Menü Box (oben links) mit dynamischer Datums-/Uhrzeitanzeige -->
+  <div id="menuBox" class="fixed top-8 left-8 z-50 bg-[#1A1A1A]/80 backdrop-blur-lg rounded-2xl p-4">
+    <div class="text-2xl font-bold text-white">
+      <div id="currentTime"></div>
+      <div id="currentDate"></div>
+    </div>
+    <div class="mt-2 text-sm text-white/60" id="dayOfWeek"></div>
+    <button id="menuToggle" class="mt-4 w-full bg-primary/20 border border-primary/50 hover:bg-primary/30 text-primary px-4 py-2 rounded-lg flex items-center justify-between transition-all duration-300">
+      <span class="text-sm font-medium">MENU</span>
+      <i class="ri-menu-4-line"></i>
+    </button>
+  </div>
+  
+  <!-- Menü-Overlay -->
+  <div class="menu-overlay fixed inset-0 bg-[#1A1A1A]/95 backdrop-blur-xl z-40 flex items-center justify-center">
+    <nav class="flex flex-col items-center gap-8">
+      <a href="#home" class="text-3xl text-white/80 hover:text-primary transition-all duration-300">Home</a>
+      <a href="#about" class="text-3xl text-white/80 hover:text-primary transition-all duration-300">About</a>
+      <a href="#work" class="text-3xl text-white/80 hover:text-primary transition-all duration-300">Work</a>
+      <a href="#skills" class="text-3xl text-white/80 hover:text-primary transition-all duration-300">Skills</a>
+      <a href="#contact" class="text-3xl text-white/80 hover:text-primary transition-all duration-300">Contact</a>
+    </nav>
+  </div>
+  
+  <!-- Hauptinhalt -->
+  <main class="relative z-10">
+    <!-- Home-Sektion mit Typewriter-Effekt -->
+    <section id="home" class="min-h-screen flex items-center justify-center bg-black px-4">
+      <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-7xl font-bold text-white mb-4">
+          <span class="typewriter-text overflow-hidden border-r-4 border-white whitespace-pre"></span>
+        </h1>
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const text = "DESIGN, CREATE,\nEXPRESS YOURSELF";
+            const typewriterText = document.querySelector(".typewriter-text");
+            let i = 0;
+            
+            function typeWriter() {
+              if (i < text.length) {
+                typewriterText.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+              } else {
+                // Nach Ende den Text leeren, kurz warten, dann neu starten
+                setTimeout(() => {
+                  typewriterText.innerHTML = "";
+                  i = 0;
+                  typeWriter();
+                }, 15000); // 15 Sekunden Pause vor dem Neustart
+              }
+            }
+            
+            typeWriter();
+          });
+          </script>
+          
+      </div>
+    </section>
+    
+    <section id="about" class="min-h-screen py-32 px-4 bg-gray-100">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-6xl font-bold mb-8 text-center">About Me</h2>
+        <p class="text-2xl text-center">
+          I am Marcel Le – a creative mind with a passion for design, business, and technology. Welcome to my portfolio.
+        </p>
+      </div>
+    </section>
+    
+    
+    
+    <!-- Work-Sektion (Galerie) -->
+    <section id="work" class="py-20 px-4 bg-black">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold mb-12 text-center text-white">My Work</h2>
+        <!-- 2 x 2 Grid, das responsiv bleibt -->
+        <div class="grid grid-cols-2 gap-6">
+          <!-- Panel 1, verlinkt zu page1.html -->
+          <a href="fashion.html" class="block relative overflow-hidden rounded-xl transition-transform duration-300 hover:scale-110">
+            <img src="assets/images/dark heart.gif" alt="Work 1" class="w-full h-64 object-cover filter blur-sm brightness-75 hover:filter-none" />
+          </a>
+          <!-- Panel 2, verlinkt zu page2.html -->
+          <a href="design.html" class="block relative overflow-hidden rounded-xl transition-transform duration-300 hover:scale-110">
+            <img src="assets/images/helsing.gif" alt="Work 2" class="w-full h-64 object-cover filter blur-sm brightness-75 hover:filter-none" />
+          </a>
+          <!-- Panel 3, verlinkt zu page3.html -->
+          <a href="photography.html" class="block relative overflow-hidden rounded-xl transition-transform duration-300 hover:scale-110">
+            <img src="assets/images/chojo.gif" alt="Work 3" class="w-full h-64 object-cover filter blur-sm brightness-75 hover:filter-none" />
+          </a>
+          <!-- Panel 4, verlinkt zu page4.html -->
+          <a href="contact.html" class="block relative overflow-hidden rounded-xl transition-transform duration-300 hover:scale-110">
+            <img src="assets/images/rengoku.gif" alt="Work 4" class="w-full h-64 object-cover filter blur-sm brightness-75 hover:filter-none" />
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    
+    <!-- Skills-Sektion mit animiertem Banner -->
+    <section id="skills" class="py-20 px-4 bg-gray-50 relative">
+      <div class="max-w-7xl mx-auto text-center mb-12">
+        <h2 class="text-5xl font-bold uppercase">My Expertise</h2>
+      </div>
+      <div class="relative overflow-hidden bg-white py-4">
+        <div class="whitespace-nowrap inline-block animate-marquee">
+          <span class="mx-12 text-2xl font-bold text-primary">Web Design</span>
+          <span class="mx-12 text-2xl font-bold text-primary">Graphic Design</span>
+          <span class="mx-12 text-2xl font-bold text-primary">Photography</span>
+          <span class="mx-12 text-2xl font-bold text-primary">Coaching</span>
+          <span class="mx-12 text-2xl font-bold text-primary">Public Speaking</span>
+          <!-- Wiederholung für Endlosschleife -->
+          <span class="mx-12 text-2xl font-bold text-primary">Web Design</span>
+          <span class="mx-12 text-2xl font-bold text-primary">Graphic Design</span>
+          <span class="mx-12 text-2xl font-bold text-primary">Photography</span>
+          <span class="mx-12 text-2xl font-bold text-primary">Coaching</span>
+          <span class="mx-12 text-2xl font-bold text-primary">Public Speaking</span>
+        </div>
+      </div>
+      <style>
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 20s linear infinite;
+        }
+      </style>
+    </section>
+    
+    <!-- Contact-Sektion -->
+    <section id="contact" class="py-20 px-4 bg-black-100">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold uppercase text-center mb-12">Contact Me</h2>
+        <div class="grid md:grid-cols-2 gap-12">
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <form id="contactForm" class="space-y-6">
+              <div>
+                <label class="block text-gray-700 mb-2">Name</label>
+                <input type="text" name="name" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary outline-none transition-colors" required />
+              </div>
+              <div>
+                <label class="block text-gray-700 mb-2">Email</label>
+                <input type="email" name="email" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary outline-none transition-colors" required />
+              </div>
+              <div>
+                <label class="block text-gray-700 mb-2">Message</label>
+                <textarea name="message" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary outline-none transition-colors h-32" required></textarea>
+              </div>
+              <button type="submit" class="w-full bg-primary text-white py-4 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity">
+                Send Message
+              </button>
+            </form>
+          </div>
+          <div class="space-y-8">
+            <div>
+              <h3 class="text-2xl font-bold uppercase mb-4">Contact Info</h3>
+              <div class="space-y-4">
+                <p class="flex items-center gap-3"><i class="ri-mail-line text-primary"></i> hoang-marcel.le@stud.uni-bamberg.de</p>
+                <p class="flex items-center gap-3"><i class="ri-map-pin-line text-primary"></i> Bamberg, Bavaria; Germany</p>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold uppercase mb-4">Follow Me</h3>
+              <div class="flex gap-4">
+                <a
+                href="#"
+                class="group w-12 h-12 bg-gray-900 text-white rounded-full flex items-center justify-center hover:bg-gradient-to-tr hover:from-[#feda75] hover:via-[#fa7e1e] hover:via-[#d62976] hover:via-[#962fbf] hover:to-[#4f5bd5] transition-all duration-300 hover:w-64 hover:rounded-full overflow-hidden whitespace-nowrap"
+              >
+                <i class="ri-instagram-fill group-hover:hidden"></i>
+                <span class="hidden group-hover:block text-sm font-medium">get entertained by private marcel</span>
+              </a>
+              
+              <a
+              href="#"
+              class="group w-12 h-12 bg-gray-900 text-white rounded-full flex items-center justify-center hover:bg-[#0A66C2] transition-all duration-300 hover:w-64 hover:rounded-full overflow-hidden whitespace-nowrap"
+            >
+              <i class="ri-linkedin-fill group-hover:hidden"></i>
+              <span class="hidden group-hover:block text-sm font-medium">this way for professional marcel</span>
+            </a>
+            
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="py-8 bg-gray-900 text-white relative">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p>&copy; 2025 Marcel Le. All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <!-- Back-to-Top Button -->
+  <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+    <i class="ri-arrow-up-line text-xl"></i>
+  </button>
+  
+  <!-- JavaScript Funktionen -->
+  <script>
+    // Smooth Scroll für Menü-Links
+    document.querySelectorAll('.menu-overlay a, #logoBox a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        const targetElem = document.querySelector(targetId);
+        if(targetElem) {
+          targetElem.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+    
+    // Back-to-Top Funktion
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 100) {
+        backToTop.classList.remove('opacity-0','invisible');
+        backToTop.classList.add('opacity-100','visible');
+      } else {
+        backToTop.classList.add('opacity-0','invisible');
+        backToTop.classList.remove('opacity-100','visible');
+      }
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    // Custom Cursor
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button').forEach(element => {
+      element.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(1.5)';
+      });
+      element.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+      });
+    });
+    
+    // Menü Overlay Toggle und Datum/Uhrzeit
+    const menuToggle = document.getElementById('menuToggle');
+    const menuOverlay = document.querySelector('.menu-overlay');
+    menuToggle.addEventListener('click', () => {
+      menuOverlay.classList.toggle('active');
+      document.body.style.overflow = menuOverlay.classList.contains('active') ? 'hidden' : '';
+    });
+    document.querySelectorAll('.menu-overlay a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+    document.addEventListener('keydown', (e) => {
+      if(e.key === "Escape" && menuOverlay.classList.contains('active')) {
+        menuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    function updateDateTime() {
+      const now = new Date();
+      const time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+      const date = now.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      const day = now.toLocaleDateString("en-US", { weekday: "long" });
+      document.getElementById("currentTime").textContent = time;
+      document.getElementById("currentDate").textContent = date;
+      document.getElementById("dayOfWeek").textContent = day;
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    
+    // Kontaktformular-Verarbeitung (Beispiel)
+    const contactForm = document.getElementById("contactForm");
+    contactForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = new FormData(contactForm);
+      // Hier könntest du per AJAX die Daten versenden.
+      const successMessage = document.createElement("div");
+      successMessage.className = "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50";
+      successMessage.textContent = "Message sent successfully!";
+      document.body.appendChild(successMessage);
+      setTimeout(() => {
+        successMessage.remove();
+      }, 3000);
+      contactForm.reset();
+    });
+  </script>
+</body>
+</html>
